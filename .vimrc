@@ -7,11 +7,16 @@ set ignorecase
 set smartcase
 set nowrap
 
-" Tab
+" Tab NOW SET BY AutoIndent
+let g:detectindent_preferred_expandtab = 1
+let g:detectindent_preferred_indent = 4
+let g:detectindent_preferred_tabstop = 4
+" autocmd BufReadPost * :DetectIndent
 set expandtab
 set smarttab
 set shiftwidth=4
 set tabstop=4
+autocmd filetype xml :DetectIndent
 
 " Tags
 set tags+="~/.vim/tags"
@@ -58,10 +63,23 @@ endif
 " Merge clipboards with system's
 set clipboard=unnamed
 
+" Folding settings
+" XML
+augroup XML
+    autocmd!
+        autocmd FileType xml setlocal foldmethod=manual foldlevelstart=999 foldminlines=0
+    augroup END
+
+
+" " " " " " " " " " " "
+" " PLUGIN SETTINGS " "
+" " " " " " " " " " " "
 
 " DelimitMate settings
 let g:delimitMate_autoclose = 1
-let g:delimitMate_matchpairs = "(:),[:],{:},<:>"
+let g:delimitMate_matchpairs = "(:),[:],{:}"
+autocmd filetype vim let delimitMate_smart_quotes = "':'" " vimrc uses \" for comments
+autocmd FileType python let b:delimitMate_nesting_quotes = ["'", '"'] 
 let g:delimitMate_jump_expansion = 1
 let g:delimitMate_expand_space = 1
 let g:delimitMate_expand_cr = 2
@@ -96,6 +114,21 @@ let g:ycm_auto_start_csharp_server = 0
 let g:ycm_cache_omnifunc = 0
 let g:ycm_auto_trigger = 1
 " let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_semantic_triggers = {
+ \ 'objc' : ['re!\@"\.*"\s',
+ \ 're!\@\w+\.*\w*\s',
+ \ 're!\@\(\w+\.*\w*\)\s',
+ \ 're!\@\(\s*',
+ \ 're!\@\[.*\]\s',
+ \ 're!\@\[\s*',
+ \ 're!\@\{.*\}\s',
+ \ 're!\@\{\s*',
+ \ "re!\@\’.*\’\s",
+ \ '#ifdef ',
+ \ 're!:\s*',
+ \ 're!=\s*',
+ \ 're!,\s*', ],
+ \ }
 autocmd filetype c nnoremap gd :YcmCompleter GoTo<CR>
 map F :YcmCompleter FixIt<CR> " Apply YCM FixIt
 
@@ -103,6 +136,7 @@ map F :YcmCompleter FixIt<CR> " Apply YCM FixIt
 " Syntastic settings
 let g:syntastic_python_checkers = ['pylint']
 " let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_python_flake8_args = '--ignore=E,W,F403'
 let g:syntastic_mode_map = {"mode": "passive", "active_filetypes": ["python"], "passive_filetypes": [] }
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
@@ -117,7 +151,6 @@ let g:syntastic_check_on_wq = 1
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#popup_on_dot = 0
 let g:jedi#completions_enabled = 1
-
 
 
 " Gutentags
@@ -139,18 +172,22 @@ augroup END
 source ~/.vim/tagbar_showfunc.vim
 
 
+" CtrlP
+" Make ctrlp a lot faster in git repositories
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
+" let g:ctrlp_user_command = ['.git/', 'git ls-files --cached --others  --exclude-standard %s']
+" let g:ctrlp_user_command = 'mdfind -onlyin %s file'
+let g:ctrlp_use_caching = 1 " ag is so fast that caching isn’t necessary
+let g:ctrlp_max_files = 10000
+let g:ctrlp_working_path_mode = 'r' " Always use the current working directory rather than the location of the current file
+let g:ctrlp_by_filename = 1 " Default to filename only search rather than searching the whole path.  This is more like Xcode's Shift+Cmd+O
+
+
 " EasyMotion
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
 nmap <leader>f <Plug>(easymotion-overwin-f)
 let g:EasyMotion_smartcase = 1
-
-" CamelCaseMotion
-omap <silent> iw <Plug>CamelCaseMotion_iw
-xmap <silent> iw <Plug>CamelCaseMotion_iw
-omap <silent> ib <Plug>CamelCaseMotion_ib
-xmap <silent> ib <Plug>CamelCaseMotion_ib
-omap <silent> ie <Plug>CamelCaseMotion_ie
-xmap <silent> ie <Plug>CamelCaseMotion_ie
 
 " FuzzyFinder
 map <F3> :FufFileWithFullCwd<CR>
@@ -165,7 +202,7 @@ call plug#begin()
 Plug 'Valloric/YouCompleteMe' " our lord and savior
 Plug 'vim-syntastic/syntastic' " python analysis 
 Plug 'davidhalter/jedi-vim' " used mostly for refactor 
-Plug 'vim-scripts/camelcasemotion'
+Plug 'tpope/vim-fugitive' " git wrapper
 
 Plug 'scrooloose/nerdcommenter' " autocomment
 Plug 'Raimondi/delimitMate' " auto add newline and }
@@ -176,15 +213,18 @@ Plug 'christoomey/vim-tmux-navigator' " integrate with tmux
 Plug 'vim-scripts/L9' " required for other plugins
 Plug 'vim-scripts/FuzzyFinder' " fuzzy file browser
 Plug 'vim-utils/vim-man' " man pages in vim
+Plug 'ciaranm/detectindent' " auto set indentation according to current file indentation
 
 Plug 'easymotion/vim-easymotion' " quickly jump to letters
+Plug 'vim-scripts/camelcasemotion' " ',w', ',b', ',e' to navigate camelcase
 Plug 'itchyny/lightline.vim' " better status line
 
 Plug 'ludovicchabant/vim-gutentags' " auto generate tags for projects
 Plug 'vim-scripts/gtags.vim' " support for GNU Gtags
 Plug 'vim-scripts/ctags.vim' " support for ctags
 Plug 'majutsushi/tagbar' " show tags in statusbard
+Plug 'kien/ctrlp.vim' " quick search bar
 
 Plug 'msanders/cocoa.vim' " objective c support
-Plug 'darfink/vim-plist' " add symantic support for plist files
+" Plug 'darfink/vim-plist' " add symantic support for plist files
 call plug#end()
