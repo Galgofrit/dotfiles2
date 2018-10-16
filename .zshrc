@@ -78,9 +78,9 @@ export PYTHONHTTPSVERIFY=0
 
 # Preferred editor for local and remote sessions
  if [[ -n $SSH_CONNECTION ]]; then
-   export EDITOR='mvim'
+   export EDITOR='vim'
  else
-   export EDITOR='mvim'
+   export EDITOR='vim'
  fi
 
 # Compilation flags
@@ -99,11 +99,19 @@ export PYTHONHTTPSVERIFY=0
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-alias mvim="/usr/local/bin/mvim -v"
-alias vim="/usr/local/bin/mvim -v"
-alias vi vim
+if [[ -f "/usr/local/bin/mvim" ]]; then
+    alias vim="/usr/local/bin/mvim -v"
+    alias mvim="/usr/local/bin/mvim -v"
+fi
+
+alias vi=vim
+alias bt=BluetoothDeviceConnector
+alias xm3="BluetoothDeviceConnector 70-26-05-cf-83-bc"
 
 alias syscall="sudo dtrace -lP syscall"
+alias ida64="open /Applications/IDA Pro 7.1/ida64.app"
+alias ida="open /Applications/IDA Pro 7.1/ida.app"
+alias lldb='PATH=/usr/bin:$PATH lldb'
 
 # setopt prompt_subst
 # PS1='%n@%m $(shrink_path -f)>'
@@ -120,3 +128,9 @@ alias class-dump="/Applications/class-dump"
 alias signature="codesign -dv --verbose=4"
 alias mview="/Applications/MachOView.app/Contents/MacOS/MachOView"
 alias readlink="greadlink"
+alias sigtypes="~/sentinel/signature_types.sh | less"
+
+# Dark theme for Slack - apply after Slack updates
+alias slackdark='cat ~/slack_dark_theme.js >> /Applications/Slack.app/Contents/Resources/app.asar.unpacked/src/static/ssb-interop.js'
+
+source ~/.python_path
