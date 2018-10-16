@@ -60,6 +60,9 @@ if has("autocmd")
     \| exe "normal! g'\"" | endif
 endif
 
+" Surround - use lowercase s to surround with 
+vmap s S
+
 " Merge clipboards with system's
 set clipboard=unnamed
 
@@ -133,19 +136,18 @@ autocmd filetype c nnoremap gd :YcmCompleter GoTo<CR>
 map F :YcmCompleter FixIt<CR> " Apply YCM FixIt
 
 
-" Syntastic settings
-let g:syntastic_python_checkers = ['pylint']
-" let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_python_flake8_args = '--ignore=E,W,F403'
-let g:syntastic_mode_map = {"mode": "passive", "active_filetypes": ["python"], "passive_filetypes": [] }
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" ale
+" Check Python files with flake8 and pylint.
+let b:ale_linters = ['flake8', 'pylint']
+" Enable completion where available.
+let g:ale_completion_enabled = 1
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'python': ['autopep8'],
+\}
+nmap <leader>f :ALEFix<cr>
 
-" let g:syntastic_always_populate_loc_list = 1
-" let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 1
+
 
 " Jedi-vim
 let g:jedi#auto_vim_configuration = 0
@@ -162,6 +164,7 @@ let g:GtagsCscope_Auto_Map = 1
 let g:GtagsCscope_Auto_Load = 1
 let g:GtagsCscope_Quiet = 1
 set statusline+=%{gutentags#statusline()}
+
 " Gutentags for lightline
 augroup MyGutentagsStatusLineRefresher
     autocmd!
@@ -172,10 +175,24 @@ augroup END
 source ~/.vim/tagbar_showfunc.vim
 
 
+" ale for lightline
+let g:lightline = {}
+
+let g:lightline.component_expand = {
+      \  'linter_checking': 'lightline#ale#checking',
+      \  'linter_warnings': 'lightline#ale#warnings',
+      \  'linter_errors': 'lightline#ale#errors',
+      \  'linter_ok': 'lightline#ale#ok',
+      \ }
+
+let g:lightline.active = { 'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]] }
+
+
 " CtrlP
 " Make ctrlp a lot faster in git repositories
 let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
-let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
+" let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 " let g:ctrlp_user_command = ['.git/', 'git ls-files --cached --others  --exclude-standard %s']
 " let g:ctrlp_user_command = 'mdfind -onlyin %s file'
 let g:ctrlp_use_caching = 1 " ag is so fast that caching isn’t necessary
@@ -184,9 +201,16 @@ let g:ctrlp_working_path_mode = 'r' " Always use the current working directory r
 let g:ctrlp_by_filename = 1 " Default to filename only search rather than searching the whole path.  This is more like Xcode's Shift+Cmd+O
 
 
+" Ignore some folders and files for CtrlP indexing
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\.git$\|\.yardoc\|node_modules\|log\|tmp$',
+  \ 'file': '\.so$\|\.dat$|\.DS_Store$\|\.pyc$\|\.*.sw.'
+  \ }
+
+
 " EasyMotion
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
-nmap <leader>f <Plug>(easymotion-overwin-f)
+" nmap <leader>f <Plug>(easymotion-overwin-f)
 let g:EasyMotion_smartcase = 1
 
 " FuzzyFinder
@@ -200,7 +224,7 @@ nmap M <Plug>(Man)
 " vimplugged 
 call plug#begin()
 Plug 'Valloric/YouCompleteMe' " our lord and savior
-Plug 'vim-syntastic/syntastic' " python analysis 
+Plug 'w0rp/ale' " async python analysis
 Plug 'davidhalter/jedi-vim' " used mostly for refactor 
 Plug 'tpope/vim-fugitive' " git wrapper
 
@@ -218,6 +242,7 @@ Plug 'ciaranm/detectindent' " auto set indentation according to current file ind
 Plug 'easymotion/vim-easymotion' " quickly jump to letters
 Plug 'vim-scripts/camelcasemotion' " ',w', ',b', ',e' to navigate camelcase
 Plug 'itchyny/lightline.vim' " better status line
+Plug 'maximbaz/lightline-ale' " ale plugin for lightline
 
 Plug 'ludovicchabant/vim-gutentags' " auto generate tags for projects
 Plug 'vim-scripts/gtags.vim' " support for GNU Gtags
