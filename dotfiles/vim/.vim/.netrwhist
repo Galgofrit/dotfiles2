@@ -1,0 +1,11 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =9
+let g:netrw_dirhist_1='/Users'
+let g:netrw_dirhist_2='/'
+let g:netrw_dirhist_3='/Users'
+let g:netrw_dirhist_4='/'
+let g:netrw_dirhist_5='/Users/galg/research/rami/2018-10-22 17:31:01'
+let g:netrw_dirhist_6='/Users/galg/Desktop/FPs/SentinelLog_2018.07.10_10.22.29_root_e425Ke/match_reports'
+let g:netrw_dirhist_7='/Users/galg/Desktop/FPs/SentinelLog_2018.07.30_08.13.45_root_yavjea/logs/system_logs.logarchive'
+let g:netrw_dirhist_8='/Users/galg/Desktop/FPs/SentinelLog_2018.07.30_08.13.45_root_yavjea/logs'
+let g:netrw_dirhist_9='/Users/galg/coding/artificial_threats/empyre'
