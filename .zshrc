@@ -1,6 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-
+# export PATH=$PATH:$HOME/Library/Python/2.7/bin
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/galg/.oh-my-zsh"
 
@@ -19,9 +19,7 @@ ZSH_THEME="robbyrussell"
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+# Uncomment the following line to use hyphen-insensitive completion. Case # sensitive completion must be off. _ and - will be interchangeable.  # HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
@@ -83,6 +81,9 @@ export PYTHONHTTPSVERIFY=0
    export EDITOR='vim'
  fi
 
+
+export HOMEBREW_GITHUB_API_TOKEN=67949c42a8cdf30cfc42276a0e60255cb09a4161
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -105,13 +106,16 @@ if [[ -f "/usr/local/bin/mvim" ]]; then
 fi
 
 alias vi=vim
+# alias tmux=tmux -2a
 alias bt=BluetoothDeviceConnector
-alias xm3="BluetoothDeviceConnector 70-26-05-cf-83-bc"
+alias xm3="BluetoothDeviceConnector 70-26-05-e0-a6-94"
 
 alias syscall="sudo dtrace -lP syscall"
 alias ida64="open /Applications/IDA Pro 7.1/ida64.app"
 alias ida="open /Applications/IDA Pro 7.1/ida.app"
 alias lldb='PATH=/usr/bin:$PATH lldb'
+
+alias tree="git log --oneline --graph --decorate --all"
 
 # setopt prompt_subst
 # PS1='%n@%m $(shrink_path -f)>'
@@ -134,3 +138,9 @@ alias sigtypes="~/sentinel/signature_types.sh | less"
 alias slackdark='cat ~/slack_dark_theme.js >> /Applications/Slack.app/Contents/Resources/app.asar.unpacked/src/static/ssb-interop.js'
 
 source ~/.python_path
+
+# powerline
+# . /Users/galg/Library/Python/2.7/lib/python/site-packages/powerline/bindings/zsh/powerline.zsh
+#
+# FZF
+export FZF_DEFAULT_COMMAND='ag -g ""'
